@@ -1,0 +1,23 @@
+version: '4.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    ports:
+      - "3306:3306"
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: test_password_admin
+      MYSQL_DATABASE: test
+      MYSQL_USER: root
+      MYSQL_PASSWORD: test_password
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+                                    
+  nodejs-server:
+    image: nodejs-server
+    build:
+      context: .
+      dockerfile: ./docker/nodejs-service/Dockerfile
+    ports:
+      - "3030:3030"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
