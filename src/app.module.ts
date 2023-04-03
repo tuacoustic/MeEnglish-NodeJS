@@ -10,6 +10,7 @@ import { roles } from './app.roles';
 import { PostModule } from './posts/posts.module';
 import { TestModule } from './test/test.module';
 import { VocabularyModule } from './vocabulary/vocabulary.module';
+import { VocabularyDetailsModule } from './vocabulary-details/vocabulaty-details.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { VocabularyModule } from './vocabulary/vocabulary.module';
     PostModule,
     TestModule,
     VocabularyModule,
+    VocabularyDetailsModule,
   ],
 })
 export class AppModule {}

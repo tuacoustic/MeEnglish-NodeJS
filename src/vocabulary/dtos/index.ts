@@ -1,1 +1,1 @@
-export * from './get.dto'
+export * from './addVocab'
