@@ -1,13 +1,9 @@
-import { IsArray, IsNotEmpty, IsNumber, IsObject, IsString } from "class-validator";
+import { IsArray, IsNotEmpty, IsNumber, IsString } from "class-validator";
 
 export class AddVocabDto {
     @IsNotEmpty()
     @IsString()
     url: string;
-
-    @IsNotEmpty()
-    @IsObject()
-    examples: object;
 
     @IsNotEmpty()
     @IsArray()

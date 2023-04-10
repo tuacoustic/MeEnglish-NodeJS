@@ -31,5 +31,10 @@ export class VocabularyController {
             }
         }
     }
+    @Get('/get')
+    async getVocab(): Promise<any> {
+        const data = await this.vocabService.getAllWithRelation();
+        return data;
+    }
 }
 

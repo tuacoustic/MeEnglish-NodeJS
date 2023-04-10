@@ -46,15 +46,17 @@ export class VocabularyEntity extends BaseEntity {
     synonyms: string[]
 
     @Column({
+        length: 50,
+        name: "phonetic_spelling"
+    })
+    phoneticSpelling: string
+
+    @Column({
         type: "simple-array",
         name: "related_words"
     })
     relatedWords: string[]
 
-    @OneToMany(
-        _ => VocabularyDetailsEntity,
-        vocabularyDetail => vocabularyDetail.word,
-        { cascade: true }
-    )
-    details: VocabularyDetailsEntity[]
+    @OneToMany(() => VocabularyDetailsEntity, (vocabularyDetails) => vocabularyDetails.word)
+    details: VocabularyDetailsEntity
 }

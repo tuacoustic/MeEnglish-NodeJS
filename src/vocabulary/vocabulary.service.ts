@@ -7,6 +7,7 @@ import { VocabularyEntity } from "./vocabulary.entity";
 import { BaseService } from "src/common/mysql/base.service";
 import { Repository } from "typeorm";
 import { VocabularyDetailsService } from "src/vocabulary-details/vocabulary-details.service";
+import { GetVocabDetailDto } from "src/vocabulary-details/dtos/getVocabDetails.dto";
 
 export interface GetDataFrService {
     status: boolean,
@@ -22,7 +23,7 @@ export class VocabularyService extends BaseService<VocabularyEntity> {
         super(vocabRepo) 
     } 
     async getDataFromUrl(dto: AddVocabDto): Promise<GetDataFrService> {
-        const { url, examples, relatedWords, imageUrl, groupNumber } = dto;
+        const { url, relatedWords, imageUrl, groupNumber } = dto;
         const getData = await axios.get(url, {responseType: 'document'});
         const root = parse(getData.data);
         const audio = root.querySelector(".phons_n_am");
@@ -39,18 +40,39 @@ export class VocabularyService extends BaseService<VocabularyEntity> {
         const level = [];
         const getShortDesc = root.querySelectorAll(".shcut") ? root.querySelectorAll(".shcut") : [];
         const shortDesc = [];
-        // const where = {
-        //     word,
-        // }
-        // const existedWord = await this.getOne(where, "word");
-        // if(existedWord) {
-        //     return {
-        //         status: false,
-        //         data: {
-        //             word,
-        //         }
-        //     };
-        // }
+        const where = {
+            word,
+            wordType,
+        }
+        const existedWord = await this.getOne(where, "word");
+        if(existedWord) {
+            return {
+                status: false,
+                data: {
+                    word,
+                }
+            };
+        }
+        const getExamples = root.querySelectorAll(".examples");
+        let exampleIndex = 1;
+        let examples = {};
+        for(let i = 0; i < getExamples.length; i += 1) {
+            const catchSpan = getExamples[i].innerHTML.indexOf('<span class="');
+            const sliceText = getExamples[i].innerHTML.slice(catchSpan, catchSpan + 17);
+            if (sliceText.indexOf('<span class="unx"')) {
+                examples[exampleIndex] = [];
+                const child = getExamples[i].childNodes;
+                for (let i2 = 0; i2 < child.length; i2 += 1) {
+                    if(examples[exampleIndex].length > 0) {
+                        examples[exampleIndex] = `${examples[exampleIndex]}
+${child[i2].text}`;
+                    } else {
+                        examples[exampleIndex] = child[i2].text;
+                    }
+                }
+                exampleIndex += 1;
+            }
+        }
         for(let i = 0; i < getLevel.length; i += 1) {
             const startLevelUrl = getLevel[i].innerHTML.indexOf("level=");
             const levelEach = getLevel[i].innerHTML.slice(startLevelUrl + 6, startLevelUrl + 8);
@@ -88,6 +110,25 @@ export class VocabularyService extends BaseService<VocabularyEntity> {
                 ...saveVocab,
                 details: savedVocabDetails
             }
+        }
+    }
+    async getAllWithRelation(): Promise<GetDataFrService> {
+        const value = await this.repo.find({
+            relations: {
+                details: true
+            },
+        })
+        const result = [];
+        for(let index = 0; index < value.length; index += 1) {
+            result.push({
+                ...value[index],
+                details: GetVocabDetailDto.plainToClass(value[index].details),
+            })
+        }
+        console.log(result[0].details[0].examples);
+        return {
+            status: true,
+            data: result,
         }
     }
     // consist, derive

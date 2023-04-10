@@ -11,6 +11,7 @@ import { PostModule } from './posts/posts.module';
 import { TestModule } from './test/test.module';
 import { VocabularyModule } from './vocabulary/vocabulary.module';
 import { VocabularyDetailsModule } from './vocabulary-details/vocabulaty-details.module';
+import { TelegramModule } from './telegram/telegram.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { VocabularyDetailsModule } from './vocabulary-details/vocabulaty-details
     TestModule,
     VocabularyModule,
     VocabularyDetailsModule,
+    TelegramModule,
   ],
 })
 export class AppModule {}
